@@ -670,11 +670,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\My Crouse\\G125-01\\App01\\Stock\\Stock.csproj",
+      "projectUniqueName": "D:\\My Crouse\\Workshops-Stock\\Stock\\Stock.csproj",
       "projectName": "Stock",
-      "projectPath": "D:\\My Crouse\\G125-01\\App01\\Stock\\Stock.csproj",
+      "projectPath": "D:\\My Crouse\\Workshops-Stock\\Stock\\Stock.csproj",
       "packagesPath": "C:\\Users\\N008\\.nuget\\packages\\",
-      "outputPath": "D:\\My Crouse\\G125-01\\App01\\Stock\\obj\\",
+      "outputPath": "D:\\My Crouse\\Workshops-Stock\\Stock\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

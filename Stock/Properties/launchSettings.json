@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Stock": {
+      "commandName": "Project",
+      "commandLineArgs": "-a -d"
+    }
+  }
+}
