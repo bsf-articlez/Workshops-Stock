@@ -9,6 +9,7 @@ namespace Stock
 {
     class Program
     {
+        private static Func<List<Stock>, List<SummaryStock>, List<SummaryStock>> exec;
         static async Task Main(string[] args)
         {
             const string filePath_stack_a = "../../../stock-a.csv";
@@ -16,8 +17,7 @@ namespace Stock
             string filePath = string.Empty;
             List<Stock> stocks = new List<Stock>();
             List<SummaryStock> summaryStocks = new List<SummaryStock>();
-            Func<List<Stock>, List<SummaryStock> ,List<SummaryStock>> exec;
-
+            
             if (args.Length > 0)
             {
                 if (args[0].Equals("-a"))
@@ -34,18 +34,25 @@ namespace Stock
                 if (args[1].Equals("-d"))
                 {
                     exec = DailySumaryStock;
-                    exec(stocks, summaryStocks);
                 }
                 else if (args[1].Equals("-h"))
                 {
                     exec = HourlySumaryStock;
-                    exec(stocks, summaryStocks);
                 }
-            }
 
-            foreach (var item in summaryStocks)
-            {
-                Console.WriteLine($"Date:{item.Date} ==> Start:{item.Start}, Min:{item.Min}, End:{item.End}, Max:{item.Max}");
+                exec(stocks, summaryStocks);
+
+                foreach (var item in summaryStocks)
+                {
+                    if (args[1].Equals("-d"))
+                    {
+                        Console.WriteLine($"Date:{item.Date.ToShortDateString()} ==> Start:{item.Start}, Min:{item.Min}, End:{item.End}, Max:{item.Max}");
+                    }
+                    else if (args[1].Equals("-h"))
+                    {
+                        Console.WriteLine($"Date:{item.Date.ToShortDateString()} [{item.Hour}] ==> Start:{item.Start}, Min:{item.Min}, End:{item.End}, Max:{item.Max}");
+                    }
+                }
             }
         }
 
@@ -96,20 +103,25 @@ namespace Stock
 
         private static List<SummaryStock> HourlySumaryStock(List<Stock> stocks, List<SummaryStock> summaryStocks)
         {
-            //var groupDate = stocks.GroupBy(x => x.Date.Date).Select(x => new { x.Key, StockItem = x }).ToList();
-            //SummaryStock summaryStock;
-            //foreach (var item in groupDate)
-            //{
-            //    summaryStock = new SummaryStock
-            //    {
-            //        Date = item.Key.Date,
-            //        Start = item.StockItem.OrderBy(x => x.Date).Select(x => x.Current).FirstOrDefault(),
-            //        End = item.StockItem.OrderByDescending(x => x.Date).Select(x => x.Current).FirstOrDefault(),
-            //        Min = item.StockItem.Select(x => x.Current).Min(),
-            //        Max = item.StockItem.Select(x => x.Current).Max()
-            //    };
-            //    summaryStocks.Add(summaryStock);
-            //}
+            var groupDate = stocks.GroupBy(x => x.Date.Date).Select(x => new { x.Key, StockItem = x }).ToList();
+            SummaryStock summaryStock;
+            foreach (var itemDate in groupDate)
+            {
+                var groupHour = itemDate.StockItem.GroupBy(x => x.Date.Hour).Select(x => new { x.Key, StockItem = x }).ToList();
+                foreach (var itemHour in groupHour)
+                {
+                    summaryStock = new SummaryStock
+                    {
+                        Date = itemDate.Key.Date,
+                        Hour = itemHour.Key,
+                        Start = itemHour.StockItem.OrderBy(x => x.Date).Select(x => x.Current).FirstOrDefault(),
+                        End = itemHour.StockItem.OrderByDescending(x => x.Date).Select(x => x.Current).FirstOrDefault(),
+                        Min = itemHour.StockItem.Select(x => x.Current).Min(),
+                        Max = itemHour.StockItem.Select(x => x.Current).Max()
+                    };
+                    summaryStocks.Add(summaryStock);
+                }
+            }
             return summaryStocks;
         }
 

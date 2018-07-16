@@ -16,6 +16,7 @@ namespace Stock
     public class SummaryStock
     {
         public DateTime Date { get; set; }
+        public int Hour { get; set; }
         public double Start { get; set; }
         public double Min { get; set; }
         public double End { get; set; }
