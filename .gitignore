@@ -1,8 +1,15 @@
 .vs
 
-App01\bin\Debug\netcoreapp2.0\App01.dll
-App01\bin\Debug\netcoreapp2.0\App01.pdb
+App01/bin/Debug/netcoreapp2.0/App01.dll
+App01/bin/Debug/netcoreapp2.0/App01.pdb
 
-App01\obj\Debug\netcoreapp2.0\App01.csproj.FileListAvsolute.txt
-App01\obj\Debug\netcoreapp2.0\App01.dll
-App01\obj\Debug\netcoreapp2.0\App01.pdb
+App01/obj/Debug/netcoreapp2.0/App01.csproj.FileListAbsolute.txt
+App01/obj/Debug/netcoreapp2.0/App01.dll
+App01/obj/Debug/netcoreapp2.0/App01.pdb
+
+Stock/bin/Debug/netcoreapp2.0/Stock.dll
+Stock/bin/Debug/netcoreapp2.0/Stock.pdb
+
+Stock/obj/Debug/netcoreapp2.0/Stock.csproj.FileListAbsolute.txt
+Stock/obj/Debug/netcoreapp2.0/Stock.dll
+Stock/obj/Debug/netcoreapp2.0/Stock.pdb
