@@ -1,0 +1,11 @@
+D:\My Crouse\G125-01\App01\App01\bin\Debug\netcoreapp2.0\App01.deps.json
+D:\My Crouse\G125-01\App01\App01\bin\Debug\netcoreapp2.0\App01.runtimeconfig.json
+D:\My Crouse\G125-01\App01\App01\bin\Debug\netcoreapp2.0\App01.runtimeconfig.dev.json
+D:\My Crouse\G125-01\App01\App01\bin\Debug\netcoreapp2.0\App01.dll
+D:\My Crouse\G125-01\App01\App01\bin\Debug\netcoreapp2.0\App01.pdb
+D:\My Crouse\G125-01\App01\App01\obj\Debug\netcoreapp2.0\App01.csprojAssemblyReference.cache
+D:\My Crouse\G125-01\App01\App01\obj\Debug\netcoreapp2.0\App01.csproj.CoreCompileInputs.cache
+D:\My Crouse\G125-01\App01\App01\obj\Debug\netcoreapp2.0\App01.AssemblyInfoInputs.cache
+D:\My Crouse\G125-01\App01\App01\obj\Debug\netcoreapp2.0\App01.AssemblyInfo.cs
+D:\My Crouse\G125-01\App01\App01\obj\Debug\netcoreapp2.0\App01.dll
+D:\My Crouse\G125-01\App01\App01\obj\Debug\netcoreapp2.0\App01.pdb

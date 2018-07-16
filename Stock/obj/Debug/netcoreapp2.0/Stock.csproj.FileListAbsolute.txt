@@ -1,0 +1,10 @@
+D:\My Crouse\G125-01\App01\Stock\obj\Debug\netcoreapp2.0\Stock.csproj.CoreCompileInputs.cache
+D:\My Crouse\G125-01\App01\Stock\obj\Debug\netcoreapp2.0\Stock.AssemblyInfoInputs.cache
+D:\My Crouse\G125-01\App01\Stock\obj\Debug\netcoreapp2.0\Stock.AssemblyInfo.cs
+D:\My Crouse\G125-01\App01\Stock\bin\Debug\netcoreapp2.0\Stock.deps.json
+D:\My Crouse\G125-01\App01\Stock\bin\Debug\netcoreapp2.0\Stock.runtimeconfig.json
+D:\My Crouse\G125-01\App01\Stock\bin\Debug\netcoreapp2.0\Stock.runtimeconfig.dev.json
+D:\My Crouse\G125-01\App01\Stock\bin\Debug\netcoreapp2.0\Stock.dll
+D:\My Crouse\G125-01\App01\Stock\bin\Debug\netcoreapp2.0\Stock.pdb
+D:\My Crouse\G125-01\App01\Stock\obj\Debug\netcoreapp2.0\Stock.dll
+D:\My Crouse\G125-01\App01\Stock\obj\Debug\netcoreapp2.0\Stock.pdb
