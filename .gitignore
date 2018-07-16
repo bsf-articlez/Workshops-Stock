@@ -1,1 +1,8 @@
 .vs
+
+App01\bin\Debug\netcoreapp2.0\App01.dll
+App01\bin\Debug\netcoreapp2.0\App01.pdb
+
+App01\obj\Debug\netcoreapp2.0\App01.csproj.FileListAvsolute.txt
+App01\obj\Debug\netcoreapp2.0\App01.dll
+App01\obj\Debug\netcoreapp2.0\App01.pdb
