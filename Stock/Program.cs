@@ -9,55 +9,69 @@ namespace Stock
 {
     class Program
     {
+        private const string pathStockA = "../../../stock-a.csv";
+        private const string pathStockB = "../../../stock-b.csv";
+        private const string stockA = "-a";
+        private const string stockB = "-b";
+        private const string summaryDaily = "-d";
+        private const string summaryHourly = "-h";
         private static Func<List<Stock>, List<SummaryStock>, List<SummaryStock>> exec;
+
         static async Task Main(string[] args)
         {
-            const string filePath_stack_a = "../../../stock-a.csv";
-            const string filePath_stack_b = "../../../stock-b.csv";
-            string filePath = string.Empty;
-            List<Stock> stocks = new List<Stock>();
-            List<SummaryStock> summaryStocks = new List<SummaryStock>();
-            
-            if (args.Length > 0)
+            if (args.Length == 2)
             {
-                if (args[0].Equals("-a"))
+                string filePath = string.Empty;
+                if (args[0].Equals(stockA))
                 {
-                    filePath = filePath_stack_a;
+                    filePath = pathStockA;
                 }
-                else if (args[0].Equals("-b"))
+                else if (args[0].Equals(stockB))
                 {
-                    filePath = filePath_stack_b;
+                    filePath = pathStockB;
                 }
 
+                List<Stock> stocks = new List<Stock>();
                 await GetStock(filePath, stocks);
 
-                if (args[1].Equals("-d"))
+                if (args[1].Equals(summaryDaily))
                 {
-                    exec = DailySumaryStock;
+                    exec = DailySummaryStock;
                 }
-                else if (args[1].Equals("-h"))
+                else if (args[1].Equals(summaryHourly))
                 {
-                    exec = HourlySumaryStock;
+                    exec = HourlySummaryStock;
                 }
 
+                List<SummaryStock> summaryStocks = new List<SummaryStock>();
                 exec(stocks, summaryStocks);
 
-                foreach (var item in summaryStocks)
+                PrintSummaryStock(args, summaryStocks);
+            }
+        }
+
+        private static void PrintSummaryStock(string[] args, List<SummaryStock> summaryStocks)
+        {
+            if (summaryStocks == null) throw new ArgumentNullException(nameof(summaryStocks));
+
+            foreach (var item in summaryStocks)
+            {
+                if (args[1].Equals(summaryDaily))
                 {
-                    if (args[1].Equals("-d"))
-                    {
-                        Console.WriteLine($"Date:{item.Date.ToShortDateString()} ==> Start:{item.Start}, Min:{item.Min}, End:{item.End}, Max:{item.Max}");
-                    }
-                    else if (args[1].Equals("-h"))
-                    {
-                        Console.WriteLine($"Date:{item.Date.ToShortDateString()} [{item.Hour}] ==> Start:{item.Start}, Min:{item.Min}, End:{item.End}, Max:{item.Max}");
-                    }
+                    Console.WriteLine($"Date:{item.Date.ToShortDateString()} ==> Start:{item.Start}, Min:{item.Min}, End:{item.End}, Max:{item.Max}");
+                }
+                else if (args[1].Equals(summaryHourly))
+                {
+                    Console.WriteLine($"Date:{item.Date.ToShortDateString()} [{item.Hour}] ==> Start:{item.Start}, Min:{item.Min}, End:{item.End}, Max:{item.Max}");
                 }
             }
         }
 
         private static async Task GetStock(string filePath, List<Stock> stocks)
         {
+            if (string.IsNullOrEmpty(filePath)) throw new ArgumentException("message", nameof(filePath));
+            if (stocks == null) throw new ArgumentNullException(nameof(stocks));
+
             using (var reader = new StreamReader(filePath))
             {
                 int lineNumber = 0;
@@ -82,8 +96,10 @@ namespace Stock
             }
         }
 
-        private static List<SummaryStock> DailySumaryStock(List<Stock> stocks, List<SummaryStock> summaryStocks)
+        private static List<SummaryStock> DailySummaryStock(List<Stock> stocks, List<SummaryStock> summaryStocks)
         {
+            if (stocks == null) throw new ArgumentNullException(nameof(stocks));
+
             var groupDate = stocks.GroupBy(x => x.Date.Date).Select(x => new { x.Key, StockItem = x }).ToList();
             SummaryStock summaryStock;
             foreach (var item in groupDate)
@@ -101,8 +117,10 @@ namespace Stock
             return summaryStocks;
         }
 
-        private static List<SummaryStock> HourlySumaryStock(List<Stock> stocks, List<SummaryStock> summaryStocks)
+        private static List<SummaryStock> HourlySummaryStock(List<Stock> stocks, List<SummaryStock> summaryStocks)
         {
+            if (stocks == null) throw new ArgumentNullException(nameof(stocks));
+
             var groupDate = stocks.GroupBy(x => x.Date.Date).Select(x => new { x.Key, StockItem = x }).ToList();
             SummaryStock summaryStock;
             foreach (var itemDate in groupDate)
@@ -127,7 +145,7 @@ namespace Stock
 
         private static void SetStockData(string[] strSplit, List<Stock> stocks, Stock stock)
         {
-            if (!strSplit[1].Trim().Equals("0"))
+            if (!Double.Parse(strSplit[1].Trim()).Equals(0))
             {
                 stock.Date = DateTime.Parse(strSplit[0].Trim());
                 stock.Current = Double.Parse(strSplit[1].Trim());
