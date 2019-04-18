@@ -7,15 +7,38 @@ using System.Linq;
 
 namespace Stock
 {
+    static class MyExtension
+    {
+        private static char NULL_CHAR = '\0';
+
+        public static IEnumerable<T> MyTake<T>(this IEnumerable<T> source, int count)
+        {
+            foreach (T s in source)
+            {
+                if (count-- == 0) yield break;
+                yield return s;
+            }
+        }
+
+        internal static ref char ElementAt(this char[] text, char searchChar)
+        {
+            int n = Array.IndexOf(text, searchChar);
+
+            if (n >= 0) return ref text[n];
+            //return ref NULL_CHAR;
+            throw new Exception("not found");
+        }
+    }
+
     class Program
     {
-        private const string pathStockA = "../../../stock-a.csv";
-        private const string pathStockB = "../../../stock-b.csv";
+        private const string pathStockA = "stock-a.csv";
+        private const string pathStockB = "stock-b.csv";
         private const string stockA = "-a";
         private const string stockB = "-b";
         private const string summaryDaily = "-d";
         private const string summaryHourly = "-h";
-        private static Func<List<Stock>, List<SummaryStock>, List<SummaryStock>> exec;
+        //private static Func<List<Stock>, List<SummaryStock>, List<SummaryStock>> exec;
 
         static async Task Main(string[] args)
         {
@@ -31,20 +54,20 @@ namespace Stock
                     filePath = pathStockB;
                 }
 
-                List<Stock> stocks = new List<Stock>();
-                await GetStock(filePath, stocks);
-
-                if (args[1].Equals(summaryDaily))
-                {
-                    exec = DailySummaryStock;
-                }
-                else if (args[1].Equals(summaryHourly))
-                {
-                    exec = HourlySummaryStock;
-                }
-
                 List<SummaryStock> summaryStocks = new List<SummaryStock>();
-                exec(stocks, summaryStocks);
+                await GetStock(filePath, summaryStocks);
+
+                //if (args[1].Equals(summaryDaily))
+                //{
+                //    exec = DailySummaryStock;
+                //}
+                //else if (args[1].Equals(summaryHourly))
+                //{
+                //    exec = HourlySummaryStock;
+                //}
+
+                //List<SummaryStock> summaryStocks = new List<SummaryStock>();
+                //exec(stocks, summaryStocks);
 
                 PrintSummaryStock(args, summaryStocks);
             }
@@ -58,19 +81,19 @@ namespace Stock
             {
                 if (args[1].Equals(summaryDaily))
                 {
-                    Console.WriteLine($"Date:{item.Date.ToShortDateString()} ==> Start:{item.Start}, Min:{item.Min}, End:{item.End}, Max:{item.Max}");
+                    Console.WriteLine($"Date:{item.Date.ToShortDateString()} ==> Open:{item.Open}, Low:{item.Low}, Close:{item.Close}, Hight:{item.Hight}");
                 }
                 else if (args[1].Equals(summaryHourly))
                 {
-                    Console.WriteLine($"Date:{item.Date.ToShortDateString()} [{item.Hour}] ==> Start:{item.Start}, Min:{item.Min}, End:{item.End}, Max:{item.Max}");
+                    Console.WriteLine($"Date:{item.Date.ToShortDateString()} [{item.Hour}] ==> Open:{item.Open}, Low:{item.Low}, Close:{item.Close}, Hight:{item.Hight}");
                 }
             }
         }
 
-        private static async Task GetStock(string filePath, List<Stock> stocks)
+        private static async Task GetStock(string filePath, List<SummaryStock> summaryStocks)
         {
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentException("message", nameof(filePath));
-            if (stocks == null) throw new ArgumentNullException(nameof(stocks));
+            if (summaryStocks == null) throw new ArgumentNullException(nameof(summaryStocks));
 
             using (var reader = new StreamReader(filePath))
             {
@@ -85,7 +108,7 @@ namespace Stock
                         strSplit = s.Split(',');
                         if (!lineNumber.Equals(1))
                         {
-                            SetStockData(strSplit, stocks, new Stock());
+                            SetStockData(strSplit, summaryStocks);
                         }
                     }
                 }
@@ -96,64 +119,98 @@ namespace Stock
             }
         }
 
-        private static List<SummaryStock> DailySummaryStock(List<Stock> stocks, List<SummaryStock> summaryStocks)
+        //private static List<SummaryStock> DailySummaryStock(List<Stock> stocks, List<SummaryStock> summaryStocks)
+        //{
+        //    if (stocks == null) throw new ArgumentNullException(nameof(stocks));
+
+        //    var groupDate = stocks.GroupBy(x => x.Date.Date).Select(x => new { x.Key, StockItem = x }).ToList();
+        //    SummaryStock summaryStock;
+        //    foreach (var item in groupDate)
+        //    {
+        //        summaryStock = new SummaryStock
+        //        {
+        //            Date = item.Key.Date,
+        //            Open = item.StockItem.OrderBy(x => x.Date).Select(x => x.Current).FirstOrDefault(),
+        //            Close = item.StockItem.OrderByDescending(x => x.Date).Select(x => x.Current).FirstOrDefault(),
+        //            Low = item.StockItem.Select(x => x.Current).Min(),
+        //            Hight = item.StockItem.Select(x => x.Current).Max()
+        //        };
+        //        summaryStocks.Add(summaryStock);
+        //    }
+        //    return summaryStocks;
+        //}
+
+        //private static List<SummaryStock> HourlySummaryStock(List<Stock> stocks, List<SummaryStock> summaryStocks)
+        //{
+        //    if (stocks == null) throw new ArgumentNullException(nameof(stocks));
+
+        //    var groupDate = stocks.GroupBy(x => x.Date.Date).Select(x => new { x.Key, StockItem = x }).ToList();
+        //    SummaryStock summaryStock;
+        //    foreach (var itemDate in groupDate)
+        //    {
+        //        var groupHour = itemDate.StockItem.GroupBy(x => x.Date.Hour).Select(x => new { x.Key, StockItem = x }).ToList();
+        //        foreach (var itemHour in groupHour)
+        //        {
+        //            summaryStock = new SummaryStock
+        //            {
+        //                Date = itemDate.Key.Date,
+        //                Hour = itemHour.Key,
+        //                Open = itemHour.StockItem.OrderBy(x => x.Date).Select(x => x.Current).FirstOrDefault(),
+        //                Close = itemHour.StockItem.OrderByDescending(x => x.Date).Select(x => x.Current).FirstOrDefault(),
+        //                Low = itemHour.StockItem.Select(x => x.Current).Min(),
+        //                Hight = itemHour.StockItem.Select(x => x.Current).Max()
+        //            };
+        //            summaryStocks.Add(summaryStock);
+        //        }
+        //    }
+        //    return summaryStocks;
+        //}
+
+        private static void SetStockData(string[] strSplit, List<SummaryStock> summaryStocks)
         {
-            if (stocks == null) throw new ArgumentNullException(nameof(stocks));
-
-            var groupDate = stocks.GroupBy(x => x.Date.Date).Select(x => new { x.Key, StockItem = x }).ToList();
             SummaryStock summaryStock;
-            foreach (var item in groupDate)
+            if (strSplit[1].Trim() != "0")
             {
-                summaryStock = new SummaryStock
+                summaryStock = new SummaryStock();
+                if (summaryStocks.Count == 0)
                 {
-                    Date = item.Key.Date,
-                    Start = item.StockItem.OrderBy(x => x.Date).Select(x => x.Current).FirstOrDefault(),
-                    End = item.StockItem.OrderByDescending(x => x.Date).Select(x => x.Current).FirstOrDefault(),
-                    Min = item.StockItem.Select(x => x.Current).Min(),
-                    Max = item.StockItem.Select(x => x.Current).Max()
-                };
-                summaryStocks.Add(summaryStock);
-            }
-            return summaryStocks;
-        }
-
-        private static List<SummaryStock> HourlySummaryStock(List<Stock> stocks, List<SummaryStock> summaryStocks)
-        {
-            if (stocks == null) throw new ArgumentNullException(nameof(stocks));
-
-            var groupDate = stocks.GroupBy(x => x.Date.Date).Select(x => new { x.Key, StockItem = x }).ToList();
-            SummaryStock summaryStock;
-            foreach (var itemDate in groupDate)
-            {
-                var groupHour = itemDate.StockItem.GroupBy(x => x.Date.Hour).Select(x => new { x.Key, StockItem = x }).ToList();
-                foreach (var itemHour in groupHour)
+                    InitialNewStockRecord(strSplit, summaryStocks, summaryStock);
+                }
+                else
                 {
-                    summaryStock = new SummaryStock
+                    for (int i = 0; i < summaryStocks.Count; i++)
                     {
-                        Date = itemDate.Key.Date,
-                        Hour = itemHour.Key,
-                        Start = itemHour.StockItem.OrderBy(x => x.Date).Select(x => x.Current).FirstOrDefault(),
-                        End = itemHour.StockItem.OrderByDescending(x => x.Date).Select(x => x.Current).FirstOrDefault(),
-                        Min = itemHour.StockItem.Select(x => x.Current).Min(),
-                        Max = itemHour.StockItem.Select(x => x.Current).Max()
-                    };
-                    summaryStocks.Add(summaryStock);
+                        i = summaryStocks.Count;
+                        --i;
+                        if (summaryStocks[i].Date.Date != DateTime.Parse(strSplit[0].Trim()).Date)
+                        {
+                            InitialNewStockRecord(strSplit, summaryStocks, summaryStock);
+                        }
+                        else
+                        {
+                            summaryStocks[i].Close = Double.Parse(strSplit[1].Trim());
+                            if (summaryStocks[i].Low > Double.Parse(strSplit[1].Trim()))
+                            {
+                                summaryStocks[i].Low = Double.Parse(strSplit[1].Trim());
+                            }
+                            if (summaryStocks[i].Hight < Double.Parse(strSplit[1].Trim()))
+                            {
+                                summaryStocks[i].Hight = Double.Parse(strSplit[1].Trim());
+                            }
+                        }
+                    }
                 }
             }
-            return summaryStocks;
         }
 
-        private static void SetStockData(string[] strSplit, List<Stock> stocks, Stock stock)
+        private static void InitialNewStockRecord(string[] strSplit, List<SummaryStock> summaryStocks, SummaryStock summaryStock)
         {
-            if (!Double.Parse(strSplit[1].Trim()).Equals(0))
-            {
-                stock.Date = DateTime.Parse(strSplit[0].Trim());
-                stock.Current = Double.Parse(strSplit[1].Trim());
-                stock.Delta = Double.Parse(strSplit[2].Trim());
-                stock.Bids = Double.Parse(strSplit[3].Trim());
-                stock.Offers = Double.Parse(strSplit[4].Trim());
-                stocks.Add(stock);
-            }
+            summaryStock.Date = DateTime.Parse(strSplit[0].Trim());
+            summaryStock.Open = Double.Parse(strSplit[1].Trim());
+            summaryStock.Close = Double.Parse(strSplit[1].Trim());
+            summaryStock.Low = Double.Parse(strSplit[1].Trim());
+            summaryStock.Hight = Double.Parse(strSplit[1].Trim());
+            summaryStocks.Add(summaryStock);
         }
     }
 }

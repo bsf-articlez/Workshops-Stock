@@ -2,7 +2,7 @@
   "profiles": {
     "Stock": {
       "commandName": "Project",
-      "commandLineArgs": "-b -h"
+      "commandLineArgs": "-a -d"
     }
   }
 }

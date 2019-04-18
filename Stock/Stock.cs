@@ -4,22 +4,13 @@ using System.Text;
 
 namespace Stock
 {
-    public class Stock
-    {
-        public DateTime Date { get; set; }
-        public double Current { get; set; }
-        public double Delta { get; set; }
-        public double Bids { get; set; }
-        public double Offers { get; set; }
-    }
-
     public class SummaryStock
     {
         public DateTime Date { get; set; }
         public int Hour { get; set; }
-        public double Start { get; set; }
-        public double Min { get; set; }
-        public double End { get; set; }
-        public double Max { get; set; }
+        public double Open { get; set; }
+        public double Low { get; set; }
+        public double Close { get; set; }
+        public double Hight { get; set; }
     }
 }
